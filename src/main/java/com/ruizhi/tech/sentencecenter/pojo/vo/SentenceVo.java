@@ -2,6 +2,8 @@ package com.ruizhi.tech.sentencecenter.pojo.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * TODO
  *
@@ -12,5 +14,5 @@ import lombok.Data;
 public class SentenceVo {
     private String content;
 
-    private String[] tags;
+    private List<String> tags;
 }
