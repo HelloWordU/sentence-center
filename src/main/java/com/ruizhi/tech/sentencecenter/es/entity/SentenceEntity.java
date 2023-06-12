@@ -23,15 +23,18 @@ import java.util.List;
 @Document(indexName = "sentence_index")
 @Setting(shards = 3)
 @Builder
-public class SentenceEntity  implements Serializable {
+public class SentenceEntity implements Serializable {
     @Id
     @Field(type = FieldType.Text)
     private String id;
-    @Field(type = FieldType.Text,analyzer="ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String content;
 
-    @Field(type = FieldType.Keyword,analyzer="ik_max_word")
+    @Field(type = FieldType.Keyword, analyzer = "ik_max_word")
     private List<String> tags;
+
+    @Field(type = FieldType.Long)
+    private Long projectId;
 
 
 }

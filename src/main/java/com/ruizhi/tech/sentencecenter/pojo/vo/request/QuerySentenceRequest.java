@@ -7,4 +7,5 @@ import java.util.List;
 @Data
 public class QuerySentenceRequest {
     private List<String> tags;
+    private Long projectId;
 }

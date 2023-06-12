@@ -11,4 +11,5 @@ import lombok.Data;
 @Data
 public class AddSentenceRequest {
     private  String content;
+    private Long projectId;
 }

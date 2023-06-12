@@ -2,9 +2,11 @@ package com.ruizhi.tech.sentencecenter.dao;
 
 import com.ruizhi.tech.sentencecenter.es.entity.SentenceEntity;
 import com.ruizhi.tech.sentencecenter.pojo.vo.request.QuerySentenceRequest;
+import org.apache.lucene.search.TermQuery;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -48,7 +50,8 @@ public class SentenceESDao {
     public List<SentenceEntity> query(QuerySentenceRequest addSentenceRequest) {
         List<SentenceEntity> res = new ArrayList<>();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        boolQueryBuilder.minimumShouldMatch(2);
+        boolQueryBuilder.minimumShouldMatch(2)
+                .must(QueryBuilders.termQuery("projectId", addSentenceRequest.getProjectId()));;
         for (String tag : addSentenceRequest.getTags()) {
             boolQueryBuilder.should(QueryBuilders.termsQuery("tags.keyword", tag));
         }

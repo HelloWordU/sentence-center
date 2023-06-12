@@ -64,5 +64,32 @@ public class SentenceController {
         return res;
     }
 
+    @PostMapping("/getContentKeys")
+    public ResultEntityList<String> getContentKeys(@RequestBody AddSentenceRequest addSentenceRequest) {
+        ResultEntityList<String> res = new ResultEntityList<>();
+        try {
+            List<String> sentenceEntities = sentenceService.getContentWords(addSentenceRequest);
+            res.setData(sentenceEntities);
+        } catch (Exception e) {
+            res.setCode(0);
+            res.setMessage(e.getMessage());
+            log.error("query error ", e);
+        }
+        return res;
+    }
+    @PostMapping("/getESSentenceKeys")
+    public ResultEntityList<String> getESSentenceKeys(@RequestBody AddSentenceRequest addSentenceRequest) {
+        ResultEntityList<String> res = new ResultEntityList<>();
+        try {
+            List<String> sentenceEntities = sentenceService.getSentenceKeys(addSentenceRequest.getContent());
+            res.setData(sentenceEntities);
+        } catch (Exception e) {
+            res.setCode(0);
+            res.setMessage(e.getMessage());
+            log.error("query error ", e);
+        }
+        return res;
+    }
+
 
 }

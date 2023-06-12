@@ -6,6 +6,7 @@ import java.io.StringReader;
 
 import cn.hutool.core.io.FileUtil;
 import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.SegToken;
 import com.huaban.analysis.jieba.WordDictionary;
 import com.ruizhi.tech.sentencecenter.dao.SentenceESDao;
 import com.ruizhi.tech.sentencecenter.es.entity.SentenceEntity;
@@ -57,19 +58,17 @@ public class SentenceService {
 
     public void add(AddSentenceRequest addSentenceRequest) {
         SentenceEntity sentenceEntity = new SentenceEntity();
-
+        sentenceEntity.setProjectId(addSentenceRequest.getProjectId());
         sentenceEntity.setId(UUID.randomUUID().toString());
-
         sentenceEntity.setTags(getSentenceKeys(addSentenceRequest.getContent()));
         sentenceEntity.setContent(addSentenceRequest.getContent());
         sentenceESDao.insert(sentenceEntity);
     }
 
-    public List<String> getSentenceKeys(String content)
-    {
+    public List<String> getSentenceKeys(String content) {
         content = content.toLowerCase();
-        content = content.replaceAll("\\d+","");
-        content = content.replaceAll("[\\w\\s]","");
+        content = content.replaceAll("\\d+", "");
+        content = content.replaceAll("[\\w\\s]", "");
         List<String> res = new ArrayList<>();
         Path path = FileSystems.getDefault().getPath(jieDicPath);
         WordDictionary.getInstance().loadUserDict(path);
@@ -77,7 +76,7 @@ public class SentenceService {
         JiebaSegmenter segmenter = new JiebaSegmenter();
         res = segmenter.sentenceProcess(content);
         res = res.stream().map(o -> o.trim()).filter(o -> !stop_words.contains(o)).distinct().collect(Collectors.toList());
-        return  res;
+        return res;
     }
 //    public List<String> getSentenceKeys2(String content) {
 //        List<String> res = new ArrayList<>();
@@ -146,4 +145,14 @@ public class SentenceService {
         res = sentenceESDao.query(addSentenceRequest);
         return res;
     }
+
+    public List<String> getContentWords(AddSentenceRequest addSentenceRequest) {
+        Path path = FileSystems.getDefault().getPath(jieDicPath);
+        WordDictionary.getInstance().loadUserDict(path);
+        JiebaSegmenter segmenter = new JiebaSegmenter();
+        List<SegToken> process = segmenter.process(addSentenceRequest.getContent(), JiebaSegmenter.SegMode.SEARCH);
+        List<String> words = process.stream().map(i -> i.word).distinct().collect(Collectors.toList());
+        return words;
+    }
+
 }

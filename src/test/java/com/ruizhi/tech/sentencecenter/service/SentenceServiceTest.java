@@ -2,6 +2,8 @@ package com.ruizhi.tech.sentencecenter.service;
 
 
 import com.alibaba.fastjson.JSON;
+import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.SegToken;
 import com.ruizhi.tech.sentencecenter.pojo.vo.request.AddSentenceRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = com.ruizhi.tech.sentencecenter.SentenceCenterApplication.class)
@@ -48,6 +51,10 @@ public class SentenceServiceTest {
                 "除了便捷、可靠、套餐多样化的境外上网服务外，APP中还提供机酒查询订购、签证办理、热门景点介绍等“旅游必备技能”。不需要再东查西查，天际通将帮助您搞定所有问题。携带天际通，一起出发，去旅游吧！";
         List<String> sentenceKeys = sentenceService.getSentenceKeys(info);
         System.out.println(JSON.toJSONString(sentenceKeys));
+        JiebaSegmenter segmenter = new JiebaSegmenter();
+        List<SegToken> process = segmenter.process(info, JiebaSegmenter.SegMode.SEARCH);
+        List<String> searchKey = process.stream().map(i->i.word).distinct().collect(Collectors.toList());
+        System.out.println(JSON.toJSONString(process));
         //  String[] contents = info.split("\n");
 //        for (String content : contents) {
 //            if (content.length() > 0) {
